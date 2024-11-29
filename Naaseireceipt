@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAASI GOLD BUYING AGENCY - Receipt Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>NAASI GOLD BUYING AGENCY</h1>
+        <form id="receiptForm">
+            <label for="customerName">Customer Name:</label>
+            <input type="text" id="customerName" required>
+
+            <label for="quantity">Quantity (grams):</label>
+            <input type="number" id="quantity" required>
+
+            <label for="pricePerGram">Price per Gram (USD):</label>
+            <input type="number" id="pricePerGram" required>
+
+            <label for="totalPrice">Total Price (USD):</label>
+            <input type="text" id="totalPrice" readonly>
+
+            <button type="submit">Generate Receipt</button>
+        </form>
+
+        <div id="receipt" class="receipt">
+            <h2>Receipt</h2>
+            <div id="receiptDetails"></div>
+            <button id="printBtn">Print Receipt</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding-top: 30px;
+    text-align: center;
+}
+
+h1 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+    display: inline-block;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    text-align: left;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.receipt {
+    display: none;
+    margin-top: 50px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 500px;
+    margin: 30px auto;
+    text-align: left;
+}
+
+#receiptDetails {
+    margin-top: 20px;
+}
+
+#printBtn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#printBtn:hover {
+    background-color: #0056b3;
+}
+// script.js
+
+// Handle form submission and receipt generation
+document.getElementById("receiptForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    // Get input values
+    const customerName = document.getElementById("customerName").value;
+    const quantity = parseFloat(document.getElementById("quantity").value);
+    const pricePerGram = parseFloat(document.getElementById("pricePerGram").value);
+
+    // Validate inputs
+    if (isNaN(quantity) || isNaN(pricePerGram) || quantity <= 0 || pricePerGram <= 0) {
+        alert("Please enter valid quantity and price.");
+        return;
+    }
+
+    // Calculate total price
+    const totalPrice = quantity * pricePerGram;
+    document.getElementById("totalPrice").value = totalPrice.toFixed(2);
+
+    // Generate receipt content
+    const receiptContent = `
+        <p><strong>Customer Name:</strong> ${customerName}</p>
+        <p><strong>Quantity (grams):</strong> ${quantity.toFixed(2)}</p>
+        <p><strong>Price per Gram (USD):</strong> ${pricePerGram.toFixed(2)}</p>
+        <p><strong>Total Price (USD):</strong> ${totalPrice.toFixed(2)}</p>
+        <p><em>Thank you for choosing NAASI GOLD BUYING AGENCY!</em></p>
+    `;
+    document.getElementById("receiptDetails").innerHTML = receiptContent;
+
+    // Show receipt
+    document.getElementById("receipt").style.display = "block";
+});
+
+// Print receipt functionality
+document.getElementById("printBtn").addEventListener("click", function() {
+    const receipt = document.getElementById("receipt").innerHTML;
+    const printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Receipt</title></head><body>');
+    printWindow.document.write(receipt);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+});
